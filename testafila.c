@@ -153,14 +153,17 @@ int main (int argc, char **argv, char **envp)
    i=0 ;
    while (i<N)
    {
+      printf("i: %d\n", i);
       aux = fila0 ;
       queue_remove ((queue_t**) &fila0, (queue_t*) aux) ;
+      printf("here\n");
       assert (fila_correta (fila0)) ;  // estrutura continua correta
       assert (aux->id == i) ;            // testa ordem do elemento removido
       assert (aux->prev == NULL) ;       // testa elemento removido
       assert (aux->next == NULL) ;       // testa elemento removido
       i++ ;
    }
+   printf("here\n");
    assert (fila0 == NULL) ;             // fila deve estar vazia
    printf ("Ok, apos %d remocoes a fila ficou vazia\n", N) ;
 

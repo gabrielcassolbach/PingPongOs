@@ -12,7 +12,17 @@ int queue_size (queue_t * queue) {
 }
 
 void queue_print (char *name, queue_t *queue, void print_elem (void*)){
-		
+	printf("%s: ", name);
+	if(queue == NULL) {printf("[]\n"); return;} 
+	queue_t *it = queue;
+	printf("[");
+	do {
+		print_elem(it);
+		it = it->next;
+		if(it != queue) printf(" ");
+	} while(it != queue);
+	printf("]");
+	printf("\n");
 }
 
 int cantAppendElem(queue_t *elem) {

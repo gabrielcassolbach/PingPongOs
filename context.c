@@ -54,7 +54,7 @@ void BodyPong (void * arg)
 
    swapcontext (&ContextPong, &ContextMain) ;
 }
-
+i
 /*****************************************************/
 
 int main (int argc, char *argv[])
@@ -63,6 +63,7 @@ int main (int argc, char *argv[])
 
    printf ("main: inicio\n") ;
 
+   /*Salva o contexto atual na variável ContextPing */
    getcontext (&ContextPing) ;
 
    stack = malloc (STACKSIZE) ;
@@ -71,7 +72,7 @@ int main (int argc, char *argv[])
       ContextPing.uc_stack.ss_sp = stack ;
       ContextPing.uc_stack.ss_size = STACKSIZE ;
       ContextPing.uc_stack.ss_flags = 0 ;
-      ContextPing.uc_link = 0 ;
+      ContextPing.uc_link = 0;
    }
    else
    {
@@ -79,6 +80,8 @@ int main (int argc, char *argv[])
       exit (1) ;
    }
 
+   /* Ajusta alguns valores internos do contexto salvo em a. 
+	Variáveis do tipo ucontext_t armazenam contextos de execução. */ 
    makecontext (&ContextPing, (void*)(*BodyPing), 1, "    Ping") ;
 
    getcontext (&ContextPong) ;
@@ -106,3 +109,5 @@ int main (int argc, char *argv[])
 
    exit (0) ;
 }
+
+

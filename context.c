@@ -19,10 +19,21 @@
 
 ucontext_t ContextPing, ContextPong, ContextMain ;
 
+/*
+typedef ucontext_t struct {
+	stack_t uc_stack; // stack used by this context.
+	ucontext_t *uc_link; // pointer to the context that will be resumed
+	... when this context returns;
+}
+*/
+
+
 /*****************************************************/
 
 void BodyPing (void * arg)
 {
+   printf("inside BodyPing\n");
+	
    int i ;
 
    printf ("%s: inicio\n", (char *) arg) ;
@@ -41,6 +52,7 @@ void BodyPing (void * arg)
 
 void BodyPong (void * arg)
 {
+   printf("inside BodyPong\n");
    int i ;
 
    printf ("%s: inicio\n", (char *) arg) ;
@@ -54,12 +66,12 @@ void BodyPong (void * arg)
 
    swapcontext (&ContextPong, &ContextMain) ;
 }
-i
+
 /*****************************************************/
 
 int main (int argc, char *argv[])
 {
-   char *stack ;
+   char *stack ; // Estrutura de dados.
 
    printf ("main: inicio\n") ;
 

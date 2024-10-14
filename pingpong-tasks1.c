@@ -45,17 +45,17 @@ void BodyPong (void * arg)
 int main (int argc, char *argv[])
 {
    printf ("main: inicio\n");
-   ppos_init () ;
+  // ppos_init () ;
 
-   task_init (&Ping, BodyPing, "    Ping") ;
-   task_init (&Pong, BodyPong, "        Pong") ;
+  // task_init (&Ping, BodyPing, "    Ping") ;
+  // task_init (&Pong, BodyPong, "        Pong") ;
 
-   task_switch (&Ping) ;
-   task_switch (&Pong) ;
+  // task_switch (&Ping) ;
+  // task_switch (&Pong) ;
 
    printf ("main: fim\n");
 
-   task_exit (0);
+  // task_exit (0);
 }
 
 

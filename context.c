@@ -19,15 +19,6 @@
 
 ucontext_t ContextPing, ContextPong, ContextMain ;
 
-/*
-typedef ucontext_t struct {
-	stack_t uc_stack; // stack used by this context.
-	ucontext_t *uc_link; // pointer to the context that will be resumed
-	... when this context returns;
-}
-*/
-
-
 /*****************************************************/
 
 void BodyPing (void * arg)
@@ -75,15 +66,15 @@ int main (int argc, char *argv[])
 
    printf ("main: inicio\n") ;
 
-   /*Salva o contexto atual na variável ContextPing */
+   /* Armazena a posição atual do código nesse instante na variável ContextPing. */
    getcontext (&ContextPing) ;
-
-   stack = malloc (STACKSIZE) ;
-   if (stack)
+									
+   stack = malloc (STACKSIZE) ;// Aloca uma área de 32k
+   if (stack) // Se foi possível alocar.
    {
-      ContextPing.uc_stack.ss_sp = stack ;
-      ContextPing.uc_stack.ss_size = STACKSIZE ;
-      ContextPing.uc_stack.ss_flags = 0 ;
+      ContextPing.uc_stack.ss_sp = stack; // salva o endereço da pilha dentro de Context.
+      ContextPing.uc_stack.ss_size = STACKSIZE;
+      ContextPing.uc_stack.ss_flags = 0;
       ContextPing.uc_link = 0;
    }
    else
@@ -92,8 +83,10 @@ int main (int argc, char *argv[])
       exit (1) ;
    }
 
-   /* Ajusta alguns valores internos do contexto salvo em a. 
-	Variáveis do tipo ucontext_t armazenam contextos de execução. */ 
+   /* Ajusta o contexto mexendo no valor do program counter 
+	para que ele aponte para BodyPing. O contexto tem um PC. Na pilha 
+	que está dentro do contexto, será colocado um parâmetro, uma string 
+	"   Ping " */
    makecontext (&ContextPing, (void*)(*BodyPing), 1, "    Ping") ;
 
    getcontext (&ContextPong) ;
@@ -106,14 +99,15 @@ int main (int argc, char *argv[])
       ContextPong.uc_stack.ss_flags = 0 ;
       ContextPong.uc_link = 0 ;
    }
-   else
-   {
+   else   {
       perror ("Erro na criação da pilha: ") ;
       exit (1) ;
    }
 
    makecontext (&ContextPong, (void*)(*BodyPong), 1, "        Pong") ;
 
+   /* O ponto de execução é salvo na variável ContextMain e o ContextPing é ativado.
+	o ContextPing ser ativado consiste em executar a função (*BodyPing). */
    swapcontext (&ContextMain, &ContextPing) ;
    swapcontext (&ContextMain, &ContextPong) ;
 

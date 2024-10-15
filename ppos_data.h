@@ -44,10 +44,6 @@ typedef struct
   // preencher quando necessário
 } mqueue_t ;
 
-task_t main_task; // a tarefa main.
-task_t *current_task; // descritor de tarefas que aponta para a tarefa principal.
-int id_task;
-
 #endif
 
 

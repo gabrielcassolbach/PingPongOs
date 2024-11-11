@@ -1,8 +1,50 @@
+// PingPongOS - PingPong Operating System
+// Prof. Carlos A. Maziero, DINF UFPR
+// Versão 1.5 -- Março de 2023
+
+// Teste do task dispatcher e escalonador FCFS
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "ppos.h"
+
+task_t Pang, Peng, Ping, Pong, Pung ;
+
+// corpo das threads
+void Body (void * arg)
+{
+   int i ;
+
+   printf ("%s: inicio\n", (char *) arg) ;
+   for (i=0; i<5; i++)
+   {
+      printf ("%s: %d\n", (char *) arg, i) ;
+      task_yield ();
+   }
+   printf ("%s: fim\n", (char *) arg) ;
+   task_exit (0) ;
+}
+
+int main (int argc, char *argv[])
+{
+   printf ("main: inicio\n");
+
+   ppos_init () ;
+
+   task_init (&Pang, Body, "    Pang") ;
+   task_init (&Peng, Body, "        Peng") ;
+   task_init (&Ping, Body, "            Ping") ;
+   task_init (&Pong, Body, "                Pong") ;
+   task_init (&Pung, Body, "                    Pung") ;
+
+   printf ("main: fim\n");
+   task_exit (0);
+}
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "ppos.h"
 #include "ppos_data.h"
-#include "queue.h"
 
 /*
 --------------------------------------------------------------------------------------
@@ -21,25 +63,11 @@ estruturas de dados alocadas para a tarefa.
 exit.
 ---------------------------------------------------------------------------------------
 */
-
-task_t* scheduler();
-void dispatcher();
-
 queue_t* ready; 
 
 task_t main_task, dispatcher_t;
 task_t *current_task;
 int id_task;
-
-void dispatcher() {
-	queue_remove(&ready, (queue_t *) &dispatcher_t);
-	while(queue_size(ready)) {
-		task_t *next_task = scheduler();
-		if(next_task != NULL) {
-			task_switch(next_task);
-		}					
-	}		
-}
 
 void ppos_init() {
 	getcontext(&(main_task.context));	
@@ -56,8 +84,18 @@ void task_yield() {
 
 task_t* scheduler() {
 	if(queue_size(ready) == 0) return NULL;
-	if(queue_size(ready) == 1) return (task_t*) ready;
-	return (task_t*) rotate_queue(&ready);					 
+	if(queue_size(ready) == 1) return ready;
+	return rotate_queue(&ready);					 
+}
+
+void dispatcher() {
+	queue_remove(&ready, (queue_t *) &dispatcher_t);
+	while(queue_size(ready)) {
+		task_t *next_task = scheduler();
+		if(next_task != NULL) {
+			task_switch(next_task);
+		}					
+	}		
 }
 
 int set_task_stack(task_t *task) {

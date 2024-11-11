@@ -16,6 +16,11 @@ typedef struct queue_t
 } queue_t ;
 
 //------------------------------------------------------------------------------
+// Rotaciona a fila.
+// Retorna o primeiro elemento da fila.
+queue_t* rotate_queue(queue_t **queue);
+
+//------------------------------------------------------------------------------
 // Conta o numero de elementos na fila
 // Retorno: numero de elementos na fila
 

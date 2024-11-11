@@ -97,3 +97,10 @@ int queue_remove (queue_t **queue, queue_t *elem) {
 	
 	return 0;
 }
+
+queue_t* rotate_queue(queue_t** q) {
+	queue_t* first_val = (*q);	
+	cutQueue(q, first_val);	
+	return first_val;					
+}
+
